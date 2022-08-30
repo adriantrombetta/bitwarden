@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  bitwarden:
+    image: bitwardenrs/server
+    restart: always
+    ports:
+      - 8000:80
+    volumes:
+      - ./bw-data:/data
+    depends_on:
+      - proxy  
+    environment:
+      WEBSOCKET_ENABLED: 'true' # Required to use websockets
+      SIGNUPS_ALLOWED: 'true'   # set to false to disable signups
+
+      
+  proxy:
+    image: 'jc21/nginx-proxy-manager:latest'
+    restart: unless-stopped
+    ports:
+      - '2090:80'
+      - '2091:81'
+    volumes:
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
+
+
